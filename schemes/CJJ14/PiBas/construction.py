@@ -46,7 +46,7 @@ class PiBas(schemes.interface.inverted_index_sse.InvertedIndexSSE):
                 l = self.config.prf_f(K1, int_to_bytes(c))
                 d = self.config.ske.Encrypt(K2, identifier)
                 L.append((l, d))
-        return PiBasEncryptedDatabase.build_from_list(L)
+        return PiBasEncryptedDatabase.build_from_list(L, self.config)
 
     def _Trap(self, K: PiBasKey, keyword: bytes) -> PiBasToken:
         """Trapdoor Generation Algorithm"""

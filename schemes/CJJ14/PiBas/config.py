@@ -28,7 +28,12 @@ DEFAULT_CONFIG = {
     "prf_f_output_length": 32,
 
     "prf_f": "HmacPRF",
-    "ske": "AES-CBC"
+    "ske": "AES-CBC",
+
+    "dict_store": {
+        "type": "PickledDict",
+        "path": "pibas_data"
+    }
 }
 
 
@@ -38,7 +43,10 @@ class PiBasConfig(SSEConfig):
         "prf_f_output_length",
 
         "prf_f",
-        "ske"
+        "ske",
+
+        # data storage parameters
+        "dict_store"
     ]
 
     DEFAULT_CONFIG = DEFAULT_CONFIG
@@ -64,3 +72,5 @@ class PiBasConfig(SSEConfig):
         self.ske = toolkit.symmetric_encryption.get_symmetric_encryption_implementation(config_dict.get("ske", ""))(
             key_length=self.param_lambda
         )
+
+        self.dict_store = config_dict.get("dict_store", {})

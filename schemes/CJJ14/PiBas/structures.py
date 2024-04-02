@@ -12,6 +12,7 @@ LIB-SSE CODE
 """
 import pickle
 
+from data_persistence.persistent_dict import PickledDict
 from schemes.CJJ14.PiBas.config import PiBasConfig, PI_BAS_HEADER
 from schemes.interface.structures import SSEKey, SSEEncryptedDatabase, SSEToken, SSEResult
 
@@ -44,7 +45,10 @@ class PiBasEncryptedDatabase(SSEEncryptedDatabase):
 
     def __init__(self, D: dict, config: PiBasConfig = None):
         super(PiBasEncryptedDatabase, self).__init__(config)
-        self.D = D
+        if config.dict_store["type"] == "PickledDict":
+            self.D = PickledDict.from_dict(D, config.dict_store["path"])
+        else:
+            self.D = D
 
     @classmethod
     def build_from_list(cls, kv_pairs: list, config: PiBasConfig = None):
@@ -53,7 +57,8 @@ class PiBasEncryptedDatabase(SSEEncryptedDatabase):
         return cls(D, config)
 
     def serialize(self) -> bytes:
-        data = PI_BAS_HEADER + pickle.dumps(self.D)
+        D_bytes = pickle.dumps(self.D) if isinstance(self.D, dict) else self.D.to_bytes()
+        data = PI_BAS_HEADER + D_bytes
         return data
 
     @classmethod
@@ -62,13 +67,17 @@ class PiBasEncryptedDatabase(SSEEncryptedDatabase):
             raise ValueError("Parse header error.")
 
         data_bytes = xbytes[len(PI_BAS_HEADER):]
-        D = pickle.loads(data_bytes)
-        return cls(D)
+        D = pickle.loads(data_bytes) if config.dict_store["type"] == "PickledDict" else PickledDict.from_bytes(data_bytes)
+        return cls(D, config)
 
     def __eq__(self, other):
         if not isinstance(other, PiBasEncryptedDatabase):
             return False
         return self.D == other.D
+
+    def release(self):
+        if hasattr(self.D, 'release'):
+            self.D.release()
 
 
 class PiBasToken(SSEToken):

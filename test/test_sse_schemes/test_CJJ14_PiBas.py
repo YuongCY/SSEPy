@@ -10,6 +10,7 @@ LIB-SSE CODE
 @software: PyCharm 
 @description: 
 """
+import copy
 import unittest
 
 import schemes
@@ -41,6 +42,7 @@ class TestPiBas(unittest.TestCase):
         token = scheme._Trap(key, b"China")
         result = scheme._Search(encrypted_index, token)
         self.assertEqual(db[b"China"], result.result)
+        encrypted_index.release()
 
     def test_method_correctness(self):
         keyword_count = 1000
@@ -60,6 +62,7 @@ class TestPiBas(unittest.TestCase):
             token = scheme._Trap(key, keyword)
             result = scheme._Search(encrypted_index, token)
             self.assertEqual(db[keyword], result.result)
+        encrypted_index.release()
 
     def test_interface_correctness(self):
         keyword_count = 1000
@@ -78,6 +81,7 @@ class TestPiBas(unittest.TestCase):
             token = scheme.TokenGen(key, keyword)
             result = scheme.Search(encrypted_index, token)
             self.assertEqual(db[keyword], result.result)
+        encrypted_index.release()
 
     def test_module_loader(self):
         loader = schemes.load_sse_module("CJJ14.PiBas")
@@ -103,8 +107,10 @@ class TestPiBas(unittest.TestCase):
         self.assertEqual(key, PiBasKey.deserialize(key.serialize(), scheme.config))
 
         encrypted_index = scheme.EDBSetup(key, db)
-        self.assertEqual(encrypted_index,
-                         PiBasEncryptedDatabase.deserialize(encrypted_index.serialize(), scheme.config))
+        temp_config = copy.deepcopy(scheme.config)
+        temp_config["dict_store"]["path"] = "temp_path"
+        temp_index = PiBasEncryptedDatabase.deserialize(encrypted_index.serialize(), temp_config)
+        self.assertEqual(encrypted_index, temp_index)
 
         for keyword in db:
             token = scheme.TokenGen(key, keyword)
@@ -117,3 +123,6 @@ class TestPiBas(unittest.TestCase):
                                                      scheme.config))
 
             self.assertEqual(db[keyword], result.result)
+
+        encrypted_index.release()
+        temp_index.release()
