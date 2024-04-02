@@ -14,6 +14,7 @@ import collections.abc
 import math
 import operator
 import os.path
+import shutil
 import typing
 
 from data_persistence.interfaces import PersistentFixedLengthBytesArray
@@ -74,6 +75,17 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
                  item_num_in_one_file: int):
         ...
 
+    @property
+    def __abs_path(self) -> str:
+        return os.path.abspath(self.__local_path)
+
+    @property
+    def __meta_path(self) -> str:
+        return os.path.join(self.__abs_path, "_meta")
+
+    def __get_file_path_by_id(self, file_id: int) -> str:
+        return os.path.join(self.__abs_path, f"_{file_id}")
+
     def __init__(self,
                  local_path: str,
                  create: bool = False,
@@ -84,7 +96,7 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
         if not create:  # read
             # Open Meta file
             try:
-                meta_file = open(local_path + "_meta", "rb+")
+                meta_file = open(self.__meta_path, "rb+")
             except FileNotFoundError:
                 raise FileNotFoundError(f"The meta file corresponding to the local path {local_path} not exists.")
             # Try read metadata from meta file
@@ -108,9 +120,10 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
                 meta_file.close()
 
         else:  # create
-            if os.path.exists(self.__local_path + "_meta"):
+            if os.path.exists(self.__meta_path):
                 raise FileExistsError(f"The file {local_path} exists.")
-            meta_file = open(local_path + "_meta", "wb+")
+            os.makedirs(self.__abs_path, exist_ok=True)
+            meta_file = open(self.__meta_path, "wb+")
 
             # Parse Argument
             try:
@@ -137,7 +150,7 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
         if self.__opened_files[file_id] is not None:  # Caching
             return self.__opened_files[file_id]
 
-        file_path = self.__local_path + f"_{file_id}"
+        file_path = self.__get_file_path_by_id(file_id)
         try:
             file = open(file_path, "rb+")
         except FileNotFoundError:
@@ -248,16 +261,9 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
     def release(self):
         # Firstly, close the files!
         self.close()
-        # delete meta file
-        meta_file_path = self.__local_path + "_meta"
-        os.unlink(meta_file_path)
-        # delete content file
-        for chunk_file_id in range(self.__file_num):
-            chunk_file_path = self.__local_path + f"_{chunk_file_id}"
-            try:
-                os.unlink(chunk_file_path)
-            except FileNotFoundError:  # the chunk file may be not found
-                pass
+        # delete dir
+        if os.path.exists(self.__abs_path):
+            shutil.rmtree(self.__abs_path)
 
     def __repr__(self):
         return f"<SimpleMultiFilePersistentFixedLengthBytesArray local_path: {self.local_path}>"

@@ -15,9 +15,9 @@ LIB-SSE CODE
 @todo:
 1. use with statement for each sub-test! (所有测试不要共用一个测试数组了)
 """
-import operator
 import os
 import random
+import shutil
 import typing
 import unittest
 
@@ -516,7 +516,8 @@ class TestSPFLBArray(unittest.TestCase):
         # meta param is not a tuple
         invalid_params = "invalid"  # may be a string...
         invalid_path = "invalid"
-        invalid_meta_filepath = invalid_path + "_meta"
+        os.makedirs(invalid_path, exist_ok=True)
+        invalid_meta_filepath = os.path.join(invalid_path, "_meta")
         with open(invalid_meta_filepath, "wb") as f:
             pickle.dump(invalid_params, f)
 
@@ -588,8 +589,8 @@ class TestSPFLBArray(unittest.TestCase):
             tmp_arr.release()
 
         # clear up
-        if os.path.exists(invalid_meta_filepath):
-            os.unlink(invalid_meta_filepath)
+        if os.path.exists(invalid_path):
+            shutil.rmtree(invalid_path)
 
     def test_negative_index(self):
         """  Tests if negative indexes work as expected.
