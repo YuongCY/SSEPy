@@ -29,7 +29,7 @@ class _ClosedDict(collections.abc.MutableMapping):
     def closed(self, *args):
         raise ValueError('invalid operation on closed dict')
 
-    __iter__ = __len__ = __getitem__ = __setitem__ = __delitem__ = keys = closed
+    __iter__ = __len__ = __getitem__ = __setitem__ = __delitem__ = __eq__ = keys = closed
 
     def __repr__(self):
         return '<Closed Dictionary>'
@@ -119,6 +119,11 @@ class PickledDict(PersistentBytesDict):
     def __delitem__(self, key: bytes):
         del self.__data[key]
 
+    def __eq__(self, other: 'PickledDict'):
+        if not isinstance(other, PickledDict):
+            return False
+        return self.__data == other.__data
+
     def __enter__(self):
         return self
 
@@ -139,6 +144,16 @@ class PickledDict(PersistentBytesDict):
     def from_dict(cls, dict_: dict, dict_path: str) -> 'PickledDict':
         pickled_dict = cls(dict_path, True)
         pickled_dict.__data = dict(dict_)  # Be Careful, Copy!
+        pickled_dict.sync()
+        return pickled_dict
+
+    def to_bytes(self):
+        return pickle.dumps(self.__data)
+
+    @classmethod
+    def from_bytes(cls, bytes_: bytes, dict_path: str) -> 'PickledDict':
+        pickled_dict = cls(dict_path, True)
+        pickled_dict.__data = pickle.loads(bytes_)
         pickled_dict.sync()
         return pickled_dict
 
@@ -236,6 +251,11 @@ class DBMDict(PersistentBytesDict):
     def __delitem__(self, key: bytes):
         del self.__shelf[key]
 
+    def __eq__(self, other):
+        if not isinstance(other, DBMDict):
+            return False
+        return self.__shelf == other.__shelf
+
     def __enter__(self):
         return self
 
@@ -262,3 +282,14 @@ class DBMDict(PersistentBytesDict):
     @classmethod
     def get_real_db_filename(cls):
         return cls._real_db_filename
+
+    def to_bytes(self) -> bytes:
+        dict_ = dict(self.__shelf)
+        return pickle.dumps(dict_)
+
+    @classmethod
+    def from_bytes(cls, bytes_: bytes, dict_path: str) -> 'DBMDict':
+        pickled_dict = cls(dict_path, True)
+        pickled_dict.__shelf.update(pickle.loads(bytes_))
+        pickled_dict.sync()
+        return pickled_dict

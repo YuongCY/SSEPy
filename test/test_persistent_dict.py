@@ -63,16 +63,20 @@ def _compare_inmemory_dict_with_persistent_dict(inmemory_dict: dict,
 
 
 class TestPickledDict(unittest.TestCase):
+    testDictPath = "test.dict"
     PersistentDictClass = PickledDict
+
+    def deleteTestDict(self):
+        if os.path.exists(self.test_persistent_dict_path):
+            os.remove(self.test_persistent_dict_path)
 
     def setUp(self) -> None:
         self.test_dict_size = 1000
         self.test_dict_key_len = 16
         self.test_dict_val_len = 16
 
-        self.test_persistent_dict_path = "test.dict"
-        if os.path.exists(self.test_persistent_dict_path):
-            os.remove(self.test_persistent_dict_path)
+        self.test_persistent_dict_path = self.testDictPath
+        self.deleteTestDict()
 
         self.inmemory_dict = _fake_dict(self.test_dict_size, self.test_dict_key_len, self.test_dict_val_len)
         self.persistent_dict = self.PersistentDictClass.from_dict(self.inmemory_dict, self.test_persistent_dict_path)
@@ -284,21 +288,41 @@ class TestPickledDict(unittest.TestCase):
                     _ = self.persistent_dict[rand_key]
                 self.assertEqual(self.persistent_dict.get(rand_key, 1000), 1000)
 
+    def test_eq(self):
+        """ Test the correctness of the persistent dictionary `__eq__`
+        """
+        dict1 = self.PersistentDictClass.from_dict(self.inmemory_dict, 'test_eq_dict1')
+        dict2 = self.PersistentDictClass.from_dict(self.inmemory_dict, 'test_eq_dict2')
+        self.assertEqual(dict1, dict2)
+
+        # todo need to random
+        dict3 = self.PersistentDictClass.from_dict(
+            _fake_dict(self.test_dict_size, self.test_dict_key_len, self.test_dict_val_len),
+            'test_eq_dict3'
+        )
+        self.assertNotEqual(dict1, dict3)
+
+        # clean up
+        dict1.release()
+        dict2.release()
+        dict3.release()
+
+    def test_bytes_convert(self):
+        """ Test the correctness of the persistent dictionary `serialize` and `deserialize`
+        """
+        data_bytes = self.persistent_dict.to_bytes()
+        new_dict = self.PersistentDictClass.from_bytes(data_bytes, 'test_bytes_convert')
+        self.assertEqual(self.persistent_dict, new_dict)
+
+        # clean up
+        new_dict.release()
+
 
 class TestDBMDict(TestPickledDict):
+    testDictPath = "test"
     PersistentDictClass = DBMDict
 
-    def setUp(self) -> None:
-        print(self._testMethodName)
-        self.test_dict_size = 1000
-        self.test_dict_key_len = 16
-        self.test_dict_val_len = 16
-
-        self.test_persistent_dict_path = "test"
+    def deleteTestDict(self):
         if os.path.exists(self.test_persistent_dict_path):
             shutil.rmtree(self.test_persistent_dict_path)
-
-        self.inmemory_dict = _fake_dict(self.test_dict_size, self.test_dict_key_len, self.test_dict_val_len)
-        self.persistent_dict = self.PersistentDictClass.from_dict(self.inmemory_dict, self.test_persistent_dict_path)
-        self.current_keys = list(self.inmemory_dict)
 
