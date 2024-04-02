@@ -61,13 +61,13 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
     @typing.overload
     def __init__(self,
                  file_path: str,
-                 mode: str = "r"):
+                 create: bool = False):
         ...
 
     @typing.overload
     def __init__(self,
                  file_path: str,
-                 mode: str = "c",
+                 create: bool = True,
                  *,
                  item_size: int,
                  array_len: int,
@@ -76,12 +76,12 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
 
     def __init__(self,
                  local_path: str,
-                 mode: str = "r",
+                 create: bool = False,
                  **kwargs
                  ):
         self.__local_path = local_path
 
-        if mode == "r":  # read
+        if not create:  # read
             # Open Meta file
             try:
                 meta_file = open(local_path + "_meta", "rb+")
@@ -96,15 +96,18 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
                 else:
                     raise ValueError(f"The meta file corresponding to the local path {local_path} is broken.")
 
-                if not (isinstance(self.__item_size, int) and isinstance(self.__array_len, int) and isinstance(
-                        self.__item_num_in_one_file, int)):
+                if not (
+                        isinstance(self.__item_size, int) and
+                        isinstance(self.__array_len, int) and
+                        isinstance(self.__item_num_in_one_file, int)
+                ):
                     raise ValueError(f"The meta file corresponding to the local path {local_path} is broken.")
             except pickle.UnpicklingError:
                 raise ValueError(f"The meta file corresponding to the local path {local_path} is broken.")
             finally:
                 meta_file.close()
 
-        elif mode == "c":  # create
+        else:  # create
             if os.path.exists(self.__local_path + "_meta"):
                 raise FileExistsError(f"The file {local_path} exists.")
             meta_file = open(local_path + "_meta", "wb+")
@@ -126,8 +129,6 @@ class SimpleMultiFilePersistentFixedLengthBytesArray(collections.abc.Sequence):
                             meta_file)
             finally:
                 meta_file.close()
-        else:  # Unexpected mode
-            raise TypeError(f"Unexpected Mode: {mode}")
 
         self.__file_num = math.ceil(self.__array_len / self.__item_num_in_one_file)
         self.__opened_files: typing.List[typing.Optional[typing.BinaryIO]] = [None] * self.__file_num
@@ -279,7 +280,7 @@ class SPFLBArray(PersistentFixedLengthBytesArray):
     @classmethod
     def open(cls,
              local_path: str) -> 'SPFLBArray':
-        return cls(local_path, mode="r")
+        return cls(local_path, create=False)
 
     @classmethod
     def create(cls,
@@ -299,7 +300,7 @@ class SPFLBArray(PersistentFixedLengthBytesArray):
             raise TypeError(f"Missing parameters: {', '.join(param for param in missing_params)}")
 
         return cls(local_path,
-                   mode="c",
+                   create=True,
                    item_size=item_size,
                    array_len=array_len,
                    item_num_in_one_file=item_num_in_one_file)
@@ -307,13 +308,13 @@ class SPFLBArray(PersistentFixedLengthBytesArray):
     @typing.overload
     def __init__(self,
                  file_path: str,
-                 mode: str = "r"):
+                 create: bool = False):
         ...
 
     @typing.overload
     def __init__(self,
                  file_path: str,
-                 mode: str = "c",
+                 create: bool = True,
                  *,
                  item_size: int,
                  array_len: int,
@@ -322,11 +323,11 @@ class SPFLBArray(PersistentFixedLengthBytesArray):
 
     def __init__(self,
                  local_path: str,
-                 mode: str = "r",
+                 create: bool = False,
                  **kwargs
                  ):
         self.__local_path = local_path
-        self.__underlying_array = SimpleMultiFilePersistentFixedLengthBytesArray(local_path, mode, **kwargs)
+        self.__underlying_array = SimpleMultiFilePersistentFixedLengthBytesArray(local_path, create, **kwargs)
 
     def __getitem__(self, item: typing.Union[slice, int]) -> typing.Union[list[bytes], bytes]:
         return self.__underlying_array[item]

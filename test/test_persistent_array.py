@@ -549,11 +549,6 @@ class TestSPFLBArray(unittest.TestCase):
                                                  array_len=100,
                                                  item_size=100)
 
-        # `TypeError` when create an array but mode code is not valid (not 'r' or 'c')
-        invalid_mode_code = "w"
-        with self.assertRaisesRegex(TypeError, f"Unexpected Mode: {invalid_mode_code}"):
-            _ = self.PersistentArrayClass("valid_path", invalid_mode_code, param1='param1')
-
         # `TypeError` when write a not byte-like object to the array
         # # Writing string is invalid
         with self.assertRaisesRegex(TypeError, "The content should be a byte string."):
