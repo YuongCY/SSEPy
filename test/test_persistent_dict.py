@@ -15,6 +15,8 @@ LIB-SSE CODE
 """
 import os
 import random
+import shutil
+import typing
 import unittest
 import threading
 
@@ -28,7 +30,7 @@ def _fake_dict(size: int, key_len: int, val_len: int) -> dict:
     return {os.urandom(key_len): os.urandom(val_len) for _ in range(size)}
 
 
-def _reload_persistent_dict(dict_: PersistentBytesDict) -> PersistentBytesDict:
+def _reload_persistent_dict(dict_: typing.Union[DBMDict, PickledDict]) -> typing.Union[DBMDict, PickledDict]:
     dict_path = dict_.dict_local_path
     dict_.close()
     return type(dict_).open(dict_path)
@@ -264,11 +266,6 @@ class TestPickledDict(unittest.TestCase):
             # already created
             _ = self.PersistentDictClass.create(self.test_persistent_dict_path)
 
-        # `TypeError` when create an array but mode code is not valid (not 'r' or 'c')
-        invalid_mode_code = "w"
-        with self.assertRaisesRegex(TypeError, f"Unexpected Mode: {invalid_mode_code}"):
-            _ = self.PersistentDictClass("valid_path", invalid_mode_code)
-
         # `TypeError` when write a not byte-like object to the array
         # # Writing string is invalid
         with self.assertRaisesRegex(TypeError, "The content should be a byte string."):
@@ -290,3 +287,18 @@ class TestPickledDict(unittest.TestCase):
 
 class TestDBMDict(TestPickledDict):
     PersistentDictClass = DBMDict
+
+    def setUp(self) -> None:
+        print(self._testMethodName)
+        self.test_dict_size = 1000
+        self.test_dict_key_len = 16
+        self.test_dict_val_len = 16
+
+        self.test_persistent_dict_path = "test"
+        if os.path.exists(self.test_persistent_dict_path):
+            shutil.rmtree(self.test_persistent_dict_path)
+
+        self.inmemory_dict = _fake_dict(self.test_dict_size, self.test_dict_key_len, self.test_dict_val_len)
+        self.persistent_dict = self.PersistentDictClass.from_dict(self.inmemory_dict, self.test_persistent_dict_path)
+        self.current_keys = list(self.inmemory_dict)
+

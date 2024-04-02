@@ -12,6 +12,7 @@ LIB-SSE CODE
 """
 import collections.abc
 import os.path
+import shutil
 import threading
 import typing
 
@@ -40,17 +41,17 @@ class PickledDict(PersistentBytesDict):
 
     @classmethod
     def open(cls, local_path: str, create_only: bool = False) -> 'PickledDict':
-        return cls(local_path, "r")
+        return cls(local_path, create_only)
 
     @classmethod
-    def create(cls, local_path: str, **_) -> 'PickledDict':
-        return cls(local_path, "c")
+    def create(cls, local_path: str) -> 'PickledDict':
+        return cls(local_path, True)
 
-    def __init__(self, file_path: str, mode: str = "r"):
+    def __init__(self, file_path: str, is_new_file: bool = False):
         self.__file_path = file_path
         self.__data = {}
         self.__file = None
-        if mode == "r":  # read
+        if not is_new_file:  # read a created dict
             try:
                 self.__file = open(file_path, "rb+")
                 self.__data = pickle.load(self.__file)
@@ -62,13 +63,10 @@ class PickledDict(PersistentBytesDict):
                 self.__file.close()
                 raise
 
-        elif mode == "c":  # create
+        else:  # create a new dict
             if os.path.exists(file_path):
                 raise FileExistsError(f"The file {file_path} exists.")
             self.__file = open(file_path, "wb+")
-
-        else:  # Unexpected mode
-            raise TypeError(f"Unexpected Mode: {mode}")
 
     def sync(self) -> None:
         self.__file.truncate(0)
@@ -139,7 +137,7 @@ class PickledDict(PersistentBytesDict):
 
     @classmethod
     def from_dict(cls, dict_: dict, dict_path: str) -> 'PickledDict':
-        pickled_dict = cls(dict_path, mode="c")
+        pickled_dict = cls(dict_path, True)
         pickled_dict.__data = dict(dict_)  # Be Careful, Copy!
         pickled_dict.sync()
         return pickled_dict
@@ -154,30 +152,35 @@ class DBMDict(PersistentBytesDict):
     """
     __thread_lock_map = collections.defaultdict(lambda: threading.Lock())
 
+    """ Real Database Filename for underlying DBM
+    """
+    _real_db_filename = 'db'
+
     @classmethod
     def open(cls, local_path: str, create_only: bool = False) -> 'DBMDict':
-        return cls(local_path, "r")
+        return cls(local_path, create_only)
 
     @classmethod
-    def create(cls, local_path: str, *, wait=False, **config) -> 'DBMDict':
-        return cls(local_path, "c")
+    def create(cls, local_path: str) -> 'DBMDict':
+        return cls(local_path, True)
 
-    def __init__(self, file_path: str, mode: str = "r"):
+    def __init__(self, file_path: str, is_new_file: bool = False):
         self.__file_path = file_path
         self.__closed = False
         self.__shelf = None
+
         # check validity only
-        if mode == "r":  # read
+        if not is_new_file:  # read
             if not os.path.exists(file_path):
                 raise FileNotFoundError(f"The dict corresponding to the local path {file_path} not exists.")
-        elif mode == "c":  # create
+        else:  # create
             if os.path.exists(file_path):
                 raise FileExistsError(f"The file {file_path} exists.")
-        else:  # unexpected mode
-            raise TypeError(f"Unexpected Mode: {mode}")
-
         self.__thread_lock_map[file_path].acquire()
-        self.__shelf = data_persistence.bytes_shelf.open(file_path, writeback=True)
+        os.makedirs(self.__file_path, exist_ok=True)
+        self.__real_path = os.path.join(os.path.abspath(file_path), type(self)._real_db_filename)
+
+        self.__shelf = data_persistence.bytes_shelf.open(self.__real_path, writeback=True)
 
     def sync(self) -> None:
         self.__shelf.sync()
@@ -203,7 +206,8 @@ class DBMDict(PersistentBytesDict):
     def release(self) -> None:
         self.close()
         if os.path.exists(self.__file_path):  # may be released multiple times
-            os.unlink(self.__file_path)
+            # os.unlink(self.__file_path)
+            shutil.rmtree(self.__file_path)
 
     def __iter__(self):
         return iter(self.__shelf)
@@ -250,7 +254,11 @@ class DBMDict(PersistentBytesDict):
 
     @classmethod
     def from_dict(cls, dict_: dict, dict_path: str) -> 'DBMDict':
-        pickled_dict = cls(dict_path, mode="c")
+        pickled_dict = cls(dict_path, True)
         pickled_dict.__shelf.update(dict_)
         pickled_dict.sync()
         return pickled_dict
+
+    @classmethod
+    def get_real_db_filename(cls):
+        return cls._real_db_filename
