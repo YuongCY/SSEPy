@@ -31,7 +31,7 @@ DEFAULT_CONFIG = {
     "ske": "AES-CBC",
 
     "dict_store": {
-        "type": "PickledDict",
+        "type": "DBMDict",
         "path": "pibas_data"
     }
 }

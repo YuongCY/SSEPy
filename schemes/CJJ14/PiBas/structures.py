@@ -15,6 +15,7 @@ import pickle
 from data_persistence.persistent_dict import PickledDict
 from schemes.CJJ14.PiBas.config import PiBasConfig, PI_BAS_HEADER
 from schemes.interface.structures import SSEKey, SSEEncryptedDatabase, SSEToken, SSEResult
+from toolkit.dump_tools import dump_object
 
 
 class PiBasKey(SSEKey):
@@ -44,7 +45,7 @@ class PiBasEncryptedDatabase(SSEEncryptedDatabase):
     __slots__ = ["D"]  # dict D
 
     def __init__(self, D: dict, config: PiBasConfig = None):
-        super(PiBasEncryptedDatabase, self).__init__(config)
+        super().__init__(config)
         if config.dict_store["type"] == "PickledDict":
             self.D = PickledDict.from_dict(D, config.dict_store["path"])
         else:
@@ -57,7 +58,7 @@ class PiBasEncryptedDatabase(SSEEncryptedDatabase):
         return cls(D, config)
 
     def serialize(self) -> bytes:
-        D_bytes = pickle.dumps(self.D) if isinstance(self.D, dict) else self.D.to_bytes()
+        D_bytes = dump_object(self.D)
         data = PI_BAS_HEADER + D_bytes
         return data
 

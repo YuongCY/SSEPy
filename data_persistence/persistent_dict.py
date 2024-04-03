@@ -22,6 +22,8 @@ import pickle
 
 __all__ = ["PickledDict", "DBMDict"]
 
+from toolkit.temp_tools import make_temp_path
+
 
 class _ClosedDict(collections.abc.MutableMapping):
     """Marker for a closed dict.  Access attempts raise a ValueError."""
@@ -40,14 +42,23 @@ class PickledDict(PersistentBytesDict):
     """
 
     @classmethod
-    def open(cls, local_path: str, create_only: bool = False) -> 'PickledDict':
+    def open(cls, local_path: str = '', create_only: bool = False) -> 'PickledDict':
         return cls(local_path, create_only)
 
     @classmethod
-    def create(cls, local_path: str) -> 'PickledDict':
+    def create(cls, local_path: str = '') -> 'PickledDict':
         return cls(local_path, True)
 
-    def __init__(self, file_path: str, is_new_file: bool = False):
+    def __init__(self, file_path: str = '', is_new_file: bool = False):
+        if not file_path:
+            # create temporary file
+            if not is_new_file:
+                raise ValueError("Please specify the file path when opening an existing file.")
+            file_path = make_temp_path()
+            self.__is_temp = True
+        else:
+            self.__is_temp = False
+
         self.__file_path = file_path
         self.__data = {}
         self.__file = None
@@ -132,6 +143,8 @@ class PickledDict(PersistentBytesDict):
 
     def __del__(self):
         self.close()
+        if self.__is_temp:
+            self.release()
 
     def clear(self):
         self.__data = {}
@@ -141,7 +154,7 @@ class PickledDict(PersistentBytesDict):
         return self.__file_path
 
     @classmethod
-    def from_dict(cls, dict_: dict, dict_path: str) -> 'PickledDict':
+    def from_dict(cls, dict_: dict, dict_path: str = '') -> 'PickledDict':
         pickled_dict = cls(dict_path, True)
         pickled_dict.__data = dict(dict_)  # Be Careful, Copy!
         pickled_dict.sync()
@@ -151,7 +164,7 @@ class PickledDict(PersistentBytesDict):
         return pickle.dumps(self.__data)
 
     @classmethod
-    def from_bytes(cls, bytes_: bytes, dict_path: str) -> 'PickledDict':
+    def from_bytes(cls, bytes_: bytes, dict_path: str = '') -> 'PickledDict':
         pickled_dict = cls(dict_path, True)
         pickled_dict.__data = pickle.loads(bytes_)
         pickled_dict.sync()
@@ -180,6 +193,15 @@ class DBMDict(PersistentBytesDict):
         return cls(local_path, True)
 
     def __init__(self, file_path: str, is_new_file: bool = False):
+        if not file_path:
+            # create temporary file
+            if not is_new_file:
+                raise ValueError("Please specify the file path when opening an existing file.")
+            file_path = make_temp_path()
+            self.__is_temp = True
+        else:
+            self.__is_temp = False
+
         self.__file_path = file_path
         self.__closed = False
         self.__shelf = None
@@ -264,6 +286,8 @@ class DBMDict(PersistentBytesDict):
 
     def __del__(self):
         self.close()
+        if self.__is_temp:
+            self.release()
 
     def clear(self):
         self.__shelf.clear()
@@ -273,7 +297,7 @@ class DBMDict(PersistentBytesDict):
         return self.__file_path
 
     @classmethod
-    def from_dict(cls, dict_: dict, dict_path: str) -> 'DBMDict':
+    def from_dict(cls, dict_: dict, dict_path: str = '') -> 'DBMDict':
         pickled_dict = cls(dict_path, True)
         pickled_dict.__shelf.update(dict_)
         pickled_dict.sync()
