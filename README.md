@@ -59,7 +59,7 @@ The server just needs to run `run_server.py`
 
 #### Run Server
 ```shell
- python3 run_server.py start
+ python run_server.py start
 ```
 
 ### Client
@@ -77,7 +77,7 @@ The user can then open the configuration file and modify it as needed.
   - `--save-path`: the path where the configuration file is saved
 - example:
     ```
-    python3 run_client.py generate-config --scheme CJJ14.PiBas --save-path cjj14_config
+    python run_client.py generate-config --scheme CJJ14.PiBas --save-path cjj14_config
 
     >>> Create default config of CJJ14.PiBas successfully.
     ```
@@ -107,7 +107,7 @@ and returns the service id (sid).
 - returns: the sid of the created service
 - example:
     ```
-    python3 run_client.py create-service --config cjj14_config --sname pibas_s0
+    python run_client.py create-service --config cjj14_config --sname pibas_s0
 
     >>> Create service e9cbf76d6578ba967f5a1d80250096f59a0524cea9c8a4d47f0bf92c157f1959 successfully.
     >>> sid: e9cbf76d6578ba967f5a1d80250096f59a0524cea9c8a4d47f0bf92c157f1959
@@ -126,7 +126,7 @@ enter the sid (service id) or sname (service name), and the CLI uploads the conf
   - `--sid` or `--sname`: (choose one of two) the service id or service name
 - example:
   ```
-  python3 run_client.py upload-config --sname pibas_s0
+  python run_client.py upload-config --sname pibas_s0
 
   >>> Upload config successfully
   ```
@@ -141,7 +141,7 @@ enter the sid or sname, and the CLI will generate the SSE key.
   - `--sid` or `--sname`: (choose one of two) the service id or service name
 - example:
   ```
-  python3 run_client.py generate-key --sname pibas_s0
+  python run_client.py generate-key --sname pibas_s0
   
   >>> Generate key successfully.
   ```
@@ -157,7 +157,7 @@ enter the sid (or sname) and database path, and the CLI will generate an encrypt
   - `--db-path`: the file path of database
 - example:
   ```
-  python3 run_client.py encrypt-database --sname pibas_s0 --db-path example_db.json
+  python run_client.py encrypt-database --sname pibas_s0 --db-path example_db.json
   
   >>> Encrypted Database successfully.
   ```
@@ -197,7 +197,7 @@ enter the sid, and the CLI will upload the encrypted database to the server.
   - `--sid` or `--sname`: (choose one of two) the service id or service name
 - example:
   ```
-  python3 run_client.py upload-encrypted-database --sname pibas_s0
+  python run_client.py upload-encrypted-database --sname pibas_s0
   
   >>> Upload encrypted database successfully
   ```
@@ -214,7 +214,7 @@ and the sid, encrypt it into a token and upload it to the server for searching.
   - `--keyword`: the query keyword
 - example:
   ```
-  python3 run_client.py search --keyword Chen --sname pibas_s0
+  python run_client.py search --keyword Chen --sname pibas_s0
   
   >>> The result is [b'\x1b\xb2\xbb+', b'#2xx', b'\x88w\x1a\xbb'].
   ```

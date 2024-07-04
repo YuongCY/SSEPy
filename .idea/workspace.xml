@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce0e9a63-a4ec-4a9d-9448-cd1fd6dfa424" name="Changes" comment="revert code format of construction of DP17">
+      <change afterPath="$PROJECT_DIR$/cjj14_config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libsse.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libsse.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example_db.json" beforeDir="false" afterPath="$PROJECT_DIR$/example_db.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/client/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/client/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schemes/ANSS16/Scheme3/structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemes/ANSS16/Scheme3/structures.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schemes/interface/structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemes/interface/structures.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/toolkit/bytes_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/toolkit/bytes_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,26 +50,31 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://D:/Develop/anaconda3/Lib/json/__init__.py" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="268EYTr0xuNG9jwIUcYeUVyzphr" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/test/test_sse_schemes" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Codes/Python/Cryptography/SSEPy&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/test/test_sse_schemes" />
@@ -78,18 +82,43 @@
       <recent name="$PROJECT_DIR$/frontend/client/services" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_DP17_Pi.TestPi">
-    <configuration name="hash" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.python run_client.py create-service --config cjj14_config --sname pibas_s0">
+    <configuration name="python run_client.py create-service --config cjj14_config --sname pibas_s0" type="PythonConfigurationType" factoryName="Python">
       <module name="libsse" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="D:\Develop\anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="run_client.py" />
+      <option name="PARAMETERS" value="create-service --config cjj14_config --sname pibas_s0" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="libsse" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/toolkit" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/toolkit/hash.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_server.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -175,11 +204,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_DP17_Pi.TestPi.test_structure_serialization" />
-        <item itemvalue="Python tests.Python tests for test_DP17_Pi.TestPi.test_method_correctness_simple_version" />
-        <item itemvalue="Python tests.Python tests for test_DP17_Pi.TestPi.test_method_correctness" />
-        <item itemvalue="Python tests.Python tests for test_DP17_Pi.TestPi" />
-        <item itemvalue="Python.hash" />
+        <item itemvalue="Python.run_server" />
       </list>
     </recent_temporary>
   </component>
@@ -201,6 +226,20 @@
       <workItem from="1648617988912" duration="182000" />
       <workItem from="1648618187566" duration="14100000" />
       <workItem from="1648651841249" duration="2605000" />
+      <workItem from="1663419733311" duration="1312000" />
+      <workItem from="1663497612713" duration="346000" />
+      <workItem from="1667562868801" duration="4274000" />
+      <workItem from="1667618686658" duration="4547000" />
+      <workItem from="1667806350727" duration="4103000" />
+      <workItem from="1668244247439" duration="883000" />
+      <workItem from="1668331641204" duration="26000" />
+      <workItem from="1702629790874" duration="4260000" />
+      <workItem from="1706021328553" duration="317000" />
+      <workItem from="1710126224719" duration="220000" />
+      <workItem from="1710208277829" duration="91000" />
+      <workItem from="1719455138957" duration="2019000" />
+      <workItem from="1719981674041" duration="8505000" />
+      <workItem from="1720024840362" duration="19959000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit">
       <created>1646892340440</created>
@@ -348,6 +387,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="First Commit" />
     <MESSAGE value="SSE-1 in [CGKO06] completed" />
     <MESSAGE value="Preliminary completion of the front-end module" />
@@ -397,10 +437,12 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/libsse$symmetric_encryption.coverage" NAME="symmetric_encryption Coverage Results" MODIFIED="1646820004314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/toolkit" />
     <SUITE FILE_PATH="coverage/libsse$service.coverage" NAME="service Coverage Results" MODIFIED="1647583733221" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/frontend/client/services" />
     <SUITE FILE_PATH="coverage/libsse$connector__1_.coverage" NAME="connector (1) Coverage Results" MODIFIED="1647497797362" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/frontend/client" />
+    <SUITE FILE_PATH="coverage/SSEPy$run_server.coverage" NAME="run_server 覆盖结果" MODIFIED="1720012405338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/libsse$symmetric_encryption.coverage" NAME="symmetric_encryption Coverage Results" MODIFIED="1646820004314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/toolkit" />
     <SUITE FILE_PATH="coverage/libsse$connector.coverage" NAME="connector Coverage Results" MODIFIED="1647589505167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/frontend/server" />
     <SUITE FILE_PATH="coverage/libsse$.coverage" NAME=" Coverage Results" MODIFIED="1648621003438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/test_sse_schemes" />
+    <SUITE FILE_PATH="coverage/SSEPy$python_run_client_py_create_service___config_cjj14_config___sname_pibas_s0.coverage" NAME="python run_client.py create-service --config cjj14_config --sname pibas_s0 覆盖结果" MODIFIED="1720013350598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
